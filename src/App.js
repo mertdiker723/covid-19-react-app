@@ -1,40 +1,36 @@
 import React, { Component } from 'react';
 import { Cards, Chart, CountryPicker } from './components'
 import style from './App.module.css';
-import { fetchData } from './api/index';
 import coronaImage from './images/image.png'
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { loadCountries } from './action/country/country-action'
+import { loadCountries } from './action/country/country-action';
+import { loadDataForCountries, loadDailyData } from './action/covid/covid-action';
 
 class App extends Component {
     state = {
-        data: {},
         country: '',
     }
     async componentDidMount() {
-        const fetchedData = await fetchData();
+        this.props.actions.loadCovidData();
         this.props.actions.loadCountries();
-        this.setState({
-            data: fetchedData
-        });
+        this.props.actions.loadDailyData();
     }
 
     handleCountryChange = async (country) => {
-        const fetchedData = await fetchData(country);
+        this.props.actions.loadCovidData(country);
         this.setState({
-            data: fetchedData,
             country
         });
     }
     render() {
-        const { data, country } = this.state;
+        const { country } = this.state;
         return (
             <div className={style.container}>
                 <img className={style.image} src={coronaImage} alt={"COVID-19"} />
-                <Cards data={data} />
+                <Cards data={this.props.covidData} />
                 <CountryPicker handleCountryChange={this.handleCountryChange} allCountries={this.props.countries} />
-                <Chart data={data} country={country} />
+                <Chart data={this.props.covidData} country={country} dailyDataAll={this.props.covidDailyData} />
             </div>
         )
     }
@@ -42,14 +38,18 @@ class App extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        countries: state.countries
+        countries: state.countries,
+        covidData: state.covidData,
+        covidDailyData: state.covidDailyData
     }
 }
 
 const mapDispatchToProps = (dispatch) => {
     return {
         actions: {
-            loadCountries: bindActionCreators(loadCountries, dispatch)
+            loadCountries: bindActionCreators(loadCountries, dispatch),
+            loadCovidData: bindActionCreators(loadDataForCountries, dispatch),
+            loadDailyData: bindActionCreators(loadDailyData, dispatch)
         }
     }
 }
