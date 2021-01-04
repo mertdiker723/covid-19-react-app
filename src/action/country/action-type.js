@@ -1,0 +1,3 @@
+export const Types = {
+    LOAD_SUCCESS_COUNTRIES: "LOAD_SUCCESS_COUNTRIES"
+} 

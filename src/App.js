@@ -3,6 +3,9 @@ import { Cards, Chart, CountryPicker } from './components'
 import style from './App.module.css';
 import { fetchData } from './api/index';
 import coronaImage from './images/image.png'
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { loadCountries } from './action/country/country-action'
 
 class App extends Component {
     state = {
@@ -11,6 +14,7 @@ class App extends Component {
     }
     async componentDidMount() {
         const fetchedData = await fetchData();
+        this.props.actions.loadCountries();
         this.setState({
             data: fetchedData
         });
@@ -29,11 +33,25 @@ class App extends Component {
             <div className={style.container}>
                 <img className={style.image} src={coronaImage} alt={"COVID-19"} />
                 <Cards data={data} />
-                <CountryPicker handleCountryChange={this.handleCountryChange} />
+                <CountryPicker handleCountryChange={this.handleCountryChange} allCountries={this.props.countries} />
                 <Chart data={data} country={country} />
             </div>
         )
     }
 }
 
-export default App;
+const mapStateToProps = (state) => {
+    return {
+        countries: state.countries
+    }
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        actions: {
+            loadCountries: bindActionCreators(loadCountries, dispatch)
+        }
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);
