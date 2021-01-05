@@ -1,6 +1,13 @@
-import { applyMiddleware, compose, createStore } from "redux";
+import { applyMiddleware, compose,combineReducers, createStore } from "redux";
 import thunk from 'redux-thunk';
-import { rootReducer } from './index.js';
+import { countriesReducer } from '../reducer/country/country-reducer.js'
+import { covidDataReducer, covidDailyDataReducer } from '../reducer/covid/covid-reducer.js';
+
+const rootReducer = combineReducers({
+    countries: countriesReducer,
+    covidData: covidDataReducer,
+    covidDailyData: covidDailyDataReducer
+});
 
 export default function configureStore() {
     const allEnhancers = compose(
