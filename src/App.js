@@ -12,13 +12,13 @@ class App extends Component {
         country: '',
     }
     async componentDidMount() {
-        this.props.actions.loadCovidData();
-        this.props.actions.loadCountries();
-        this.props.actions.loadDailyData();
+        this.props.loadCovidData();
+        this.props.loadCountries();
+        this.props.loadDailyData();
     }
 
     handleCountryChange = async (country) => {
-        this.props.actions.loadCovidData(country);
+        this.props.loadCovidData(country);
         this.setState({
             country
         });
@@ -44,14 +44,10 @@ const mapStateToProps = (state) => {
     }
 }
 
-const mapDispatchToProps = (dispatch) => {
-    return {
-        actions: {
-            loadCountries: bindActionCreators(loadCountries, dispatch),
-            loadCovidData: bindActionCreators(loadDataForCountries, dispatch),
-            loadDailyData: bindActionCreators(loadDailyData, dispatch)
-        }
-    }
+const mapDispatchToProps = {
+    loadCountries: loadCountries,
+    loadCovidData: loadDataForCountries,
+    loadDailyData: loadDailyData
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);
